@@ -1,4 +1,26 @@
-# DevOps Graduation Project
+# Intelligent Traffic Management Dashboard 
+
+# Problem Addressed:
+
+Cities struggle to monitor traffic congestion and provide insights for traffic control.
+
+# Description:
+
+Develop a traffic monitoring system that collects simulated traffic data from IoT sensors or CSV logs and displays it in real-time dashboards. Automate deployment, scaling, and monitoring with DevOps tools. Students focus on data collection, automation, CI/CD, containerization, and monitoring, without AI prediction.
+
+# Deliverables:
+
+Traffic data collection service (CSV or simulated sensor inputs, Dockerized)
+Web dashboard showing congestion, peak times, and alerts
+CI/CD pipeline for service updates (Jenkins)
+Docker containers for services
+Kubernetes deployment for scalability
+Prometheus dashboards and alerts for system metrics
+Nginx as reverse proxy
+Terraform scripts for AWS infrastructure
+Ansible scripts for server setup and configuration
+Git repository for code and deployment scripts
+Tools: Jenkins, Docker, Kubernetes, Prometheus, Grafana, Ansible, Terraform, AWS EC2/S3, Nginx, Git
 
 > Graduation project for the DEPI DevOps track. Project idea is currently being finalized.
 
