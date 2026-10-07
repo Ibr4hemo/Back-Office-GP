@@ -22,7 +22,6 @@ Ansible scripts for server setup and configuration
 Git repository for code and deployment scripts
 Tools: Jenkins, Docker, Kubernetes, Prometheus, Grafana, Ansible, Terraform, AWS EC2/S3, Nginx, Git
 
-> Graduation project for the DEPI DevOps track. Project idea is currently being finalized.
 
 ## Team
 
