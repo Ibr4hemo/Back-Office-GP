@@ -28,9 +28,11 @@ Tools: Jenkins, Docker, Kubernetes, Prometheus, Grafana, Ansible, Terraform, AWS
 
 | Name | Role | GitHub |
 |------|------|--------|
-| Member 1 | TBD | @username |
-| Member 2 | TBD | @username |
-| Member 3 | TBD | @username |
+| Ibrahim Ahmed | TBD | @ibr4hemo |
+| youssef elageal | TBD | @youssefos4ma |
+| Ahmed Bahaa Mazen | TBD | @Ahmed-Mazen |
+| Ahmed ELwakeel | TBD | @ahmedelwakeel8 |
+| Mohamed Tamer | TBD | @Mohamed393652 |
 
 ## Project Overview
 
