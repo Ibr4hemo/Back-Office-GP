@@ -50,7 +50,23 @@ _We will fill this in after choosing the idea. Candidates:_
 
 ## Repository Structure
 
-_Will be updated as the project grows._
+```bash
+.
+├── backend
+│   └── dockerfile
+├── database
+│   └── dockerfile
+├── frontend
+│   └── dockerfile
+├── kubernetes
+│   ├── deployment.yaml
+│   ├── namespace.yaml
+│   └── service.yaml
+├── monitoring
+│   └── dockerfile
+└── terraform
+    └── main.tf
+```
 
 ## Getting Started
 
