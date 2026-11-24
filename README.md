@@ -64,8 +64,11 @@ _We will fill this in after choosing the idea. Candidates:_
 │   └── service.yaml
 ├── monitoring
 │   └── dockerfile
-└── terraform
-    └── main.tf
+├── terraform
+│   └── main.tf
+└── .github
+    └── workflows
+        └── CI.yaml
 ```
 
 ## Getting Started
