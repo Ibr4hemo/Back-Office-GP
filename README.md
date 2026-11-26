@@ -37,15 +37,13 @@ Tools: Jenkins, Docker, Kubernetes, Prometheus, Grafana, Ansible, Terraform, AWS
 
 _To be decided. This section will describe the problem we are solving and the solution._
 
-## Planned Tech Stack
-
-_We will fill this in after choosing the idea. Candidates:_
+## Tech Stack
 
 - Version control: Git, GitHub
-- CI/CD: GitHub Actions / Jenkins / GitLab CI
+- CI/CD: GitHub Actions
 - Containers: Docker, Kubernetes
 - IaC and configuration: Terraform, Ansible
-- Cloud: AWS / Azure
+- Cloud: AWS
 - Monitoring: Prometheus, Grafana
 
 ## Repository Structure
