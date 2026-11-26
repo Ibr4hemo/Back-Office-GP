@@ -46,7 +46,7 @@ resource "aws_nat_gateway" "Traffic-managment-NAT" {
   }
 }
 
-resource "aws_route_table" "Public Routes" {
+resource "aws_route_table" "Public-Routes" {
   vpc_id = aws_vpc.Traffic-managment-system.id
 
   route {
@@ -55,11 +55,11 @@ resource "aws_route_table" "Public Routes" {
   }
 
   tags = {
-    Name = "Public Routes"
+    Name = "Public-Routes"
   }
 }
 
-resource "aws_route_table" "Private Routes" {
+resource "aws_route_table" "Private-Routes" {
   vpc_id = aws_vpc.Traffic-managment-system.id
 
   route {
@@ -68,7 +68,7 @@ resource "aws_route_table" "Private Routes" {
   }
 
   tags = {
-    Name = "Private Routes"
+    Name = "Private-Routes"
   }
 }
 
