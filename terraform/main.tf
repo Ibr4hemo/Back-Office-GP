@@ -28,3 +28,11 @@ resource "aws_subnet" "Private-Subnet" {
     Name = "Public-Subnet"
   }
 }
+
+resource "aws_internet_gateway" "Traffic-managment-IGW" {
+  vpc_id = aws_vpc.Traffic-managment-system.id
+
+  tags = {
+    Name = "Traffic-managment-IGW"
+  }
+}
