@@ -1,4 +1,8 @@
 # Intelligent Traffic Management Dashboard 
+> Project for Digital Egypt Pioneers Initiative (DEPI)
+
+Instructor: Mohamed Rahim
+Group: GIZ5_SWD1_S1
 
 ## Problem Addressed:
 
