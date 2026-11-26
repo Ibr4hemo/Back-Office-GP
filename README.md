@@ -1,14 +1,14 @@
 # Intelligent Traffic Management Dashboard 
 
-# Problem Addressed:
+## Problem Addressed:
 
 Cities struggle to monitor traffic congestion and provide insights for traffic control.
 
-# Description:
+## Description:
 
 Develop a traffic monitoring system that collects simulated traffic data from IoT sensors or CSV logs and displays it in real-time dashboards. Automate deployment, scaling, and monitoring with DevOps tools. Students focus on data collection, automation, CI/CD, containerization, and monitoring, without AI prediction.
 
-# Deliverables:
+## Deliverables:
 
 Traffic data collection service (CSV or simulated sensor inputs, Dockerized)
 Web dashboard showing congestion, peak times, and alerts
@@ -23,32 +23,30 @@ Git repository for code and deployment scripts
 Tools: Jenkins, Docker, Kubernetes, Prometheus, Grafana, Ansible, Terraform, AWS EC2/S3, Nginx, Git
 
 
-## Team
+### Team
 
 | Name | Role | GitHub |
-|------|------|--------|
-| Ibrahim Ahmed | TBD | @ibr4hemo |
-| youssef elageal | TBD | @youssefos4ma |
-| Ahmed Bahaa Mazen | TBD | @Ahmed-Mazen |
-| Ahmed ELwakeel | TBD | @ahmedelwakeel8 |
-| Mohamed Tamer | TBD | @Mohamed393652 |
+|:------:|:------:|:--------:|
+| Ibrahim Ahmed | TBD | [@ibr4hemo](https://github.com/Ibr4hemo) |
+| youssef elageal | TBD | [@youssefos4ma](https://github.com/youssefos4ma) |
+| Ahmed Bahaa Mazen | TBD | [@Ahmed-Mazen](https://github.com/Ahmed-Mazen) |
+| Ahmed ELwakeel | TBD | [@ahmedelwakeel8](https://github.com/ahmedelwakeel8) |
+| Mohamed Tamer | TBD | [@Mohamed393652](https://github.com/Mohamed393652) |
 
-## Project Overview
+### Project Overview
 
 _To be decided. This section will describe the problem we are solving and the solution._
 
-## Planned Tech Stack
-
-_We will fill this in after choosing the idea. Candidates:_
+### Tech Stack
 
 - Version control: Git, GitHub
-- CI/CD: GitHub Actions / Jenkins / GitLab CI
+- CI/CD: GitHub Actions
 - Containers: Docker, Kubernetes
 - IaC and configuration: Terraform, Ansible
-- Cloud: AWS / Azure
+- Cloud: AWS
 - Monitoring: Prometheus, Grafana
 
-## Repository Structure
+### Repository Structure
 
 ```bash
 .
@@ -73,21 +71,21 @@ _We will fill this in after choosing the idea. Candidates:_
         └── CI.yaml
 ```
 
-## Getting Started
+### Getting Started
 
 _Setup instructions will be added once we have something to run._
 
-## Roadmap
+### Roadmap
 
-- [ ] Decide on the project idea
-- [ ] Define architecture
+- [x] Decide on the project idea
+- [x] Define architecture
 - [ ] Set up repo workflow (branches, PR rules)
 - [ ] Build CI/CD pipeline
 - [ ] Containerize and deploy
 - [ ] Add monitoring
 - [ ] Final documentation and presentation
 
-## Contributing
+### Contributing
 
 - Create a branch per task: `feature/<short-name>`
 - Open a pull request; at least one teammate reviews before merging
