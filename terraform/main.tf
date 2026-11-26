@@ -69,6 +69,11 @@ resource "aws_route_table" "Public-Routes" {
   }
 }
 
+resource "aws_route_table_association" "Public-Routes-association" {
+  subnet_id      = aws_subnet.Public-Subnet.id
+  route_table_id = aws_route_table.Public-Routes.id
+}
+
 resource "aws_route_table" "Private-Routes" {
   vpc_id = aws_vpc.Traffic-managment-system.id
 
@@ -82,3 +87,7 @@ resource "aws_route_table" "Private-Routes" {
   }
 }
 
+resource "aws_route_table_association" "Private-Routes-association" {
+  subnet_id      = aws_subnet.Private-Subnet.id
+  route_table_id = aws_route_table.Private-Routes.id
+}
