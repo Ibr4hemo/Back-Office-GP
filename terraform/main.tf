@@ -37,6 +37,15 @@ resource "aws_internet_gateway" "Traffic-managment-IGW" {
   }
 }
 
+resource "aws_nat_gateway" "Traffic-managment-NAT" {
+  connectivity_type = "private"
+  subnet_id     = aws_subnet.Private-Subnet.id
+
+  tags = {
+    Name = "Traffic-managment-NAT"
+  }
+}
+
 resource "aws_route_table" "Public Routes" {
   vpc_id = aws_vpc.Traffic-managment-system.id
 
@@ -55,7 +64,7 @@ resource "aws_route_table" "Private Routes" {
 
   route {
     cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.Traffic-managment-IGW.id
+    nat_gateway_id = aws_nat_gateway.Traffic-managment-NAT.id
   }
 
   tags = {
