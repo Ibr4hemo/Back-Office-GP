@@ -1,4 +1,8 @@
 # Intelligent Traffic Management Dashboard 
+> Project for Digital Egypt Pioneers Initiative (DEPI)
+
+* Instructor: Eng. Mohamed Rahim
+* Group: GIZ5_SWD1_S1
 
 ## Problem Addressed:
 
@@ -10,18 +14,15 @@ Develop a traffic monitoring system that collects simulated traffic data from Io
 
 ## Deliverables:
 
-Traffic data collection service (CSV or simulated sensor inputs, Dockerized)
-Web dashboard showing congestion, peak times, and alerts
-CI/CD pipeline for service updates (Jenkins)
-Docker containers for services
-Kubernetes deployment for scalability
-Prometheus dashboards and alerts for system metrics
-Nginx as reverse proxy
-Terraform scripts for AWS infrastructure
-Ansible scripts for server setup and configuration
-Git repository for code and deployment scripts
-Tools: Jenkins, Docker, Kubernetes, Prometheus, Grafana, Ansible, Terraform, AWS EC2/S3, Nginx, Git
-
+- Traffic data collection service (CSV or simulated sensor inputs, Dockerized)
+- Web dashboard showing congestion, peak times, and alerts
+- CI/CD pipeline for service updates (Jenkins)
+- Docker containers for services
+- Kubernetes deployment for scalability
+- Prometheus dashboards and alerts for system metrics
+- Terraform scripts for AWS infrastructure
+- Ansible scripts for server setup and configuration (maybe)
+- Git repository for code and deployment scripts
 
 ### Team
 
@@ -39,12 +40,12 @@ _To be decided. This section will describe the problem we are solving and the so
 
 ### Tech Stack
 
-- Version control: Git, GitHub
-- CI/CD: GitHub Actions
-- Containers: Docker, Kubernetes
-- IaC and configuration: Terraform, Ansible
-- Cloud: AWS
-- Monitoring: Prometheus, Grafana
+- **Version control**: Git, GitHub
+- **CI/CD**: GitHub Actions
+- **Containers**: Docker, Kubernetes
+- **IaC and configuration**: Terraform, Ansible(maybe)
+- **Cloud**: AWS
+- **Monitoring**: Prometheus, Grafana
 
 ### Repository Structure
 
@@ -79,7 +80,7 @@ _Setup instructions will be added once we have something to run._
 
 - [x] Decide on the project idea
 - [x] Define architecture
-- [ ] Set up repo workflow (branches, PR rules)
+- [x] Set up repo workflow (branches, PR rules)
 - [ ] Build CI/CD pipeline
 - [ ] Containerize and deploy
 - [ ] Add monitoring
