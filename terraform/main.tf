@@ -9,6 +9,7 @@ terraform {
 
 provider "aws" {
     region = "eu-north-1"
+    profile = "default"
 }
 
 resource "aws_vpc" "Traffic-managment-system" {
