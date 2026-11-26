@@ -10,18 +10,15 @@ Develop a traffic monitoring system that collects simulated traffic data from Io
 
 ## Deliverables:
 
-Traffic data collection service (CSV or simulated sensor inputs, Dockerized)
-Web dashboard showing congestion, peak times, and alerts
-CI/CD pipeline for service updates (Jenkins)
-Docker containers for services
-Kubernetes deployment for scalability
-Prometheus dashboards and alerts for system metrics
-Nginx as reverse proxy
-Terraform scripts for AWS infrastructure
-Ansible scripts for server setup and configuration
-Git repository for code and deployment scripts
-Tools: Jenkins, Docker, Kubernetes, Prometheus, Grafana, Ansible, Terraform, AWS EC2/S3, Nginx, Git
-
+- Traffic data collection service (CSV or simulated sensor inputs, Dockerized)
+- Web dashboard showing congestion, peak times, and alerts
+- CI/CD pipeline for service updates (Jenkins)
+- Docker containers for services
+- Kubernetes deployment for scalability
+- Prometheus dashboards and alerts for system metrics
+- Terraform scripts for AWS infrastructure
+- Ansible scripts for server setup and configuration (maybe)
+- Git repository for code and deployment scripts
 
 ### Team
 
