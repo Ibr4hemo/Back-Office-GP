@@ -26,12 +26,12 @@ Tools: Jenkins, Docker, Kubernetes, Prometheus, Grafana, Ansible, Terraform, AWS
 ## Team
 
 | Name | Role | GitHub |
-|------|------|--------|
-| Ibrahim Ahmed | TBD | @ibr4hemo |
-| youssef elageal | TBD | @youssefos4ma |
-| Ahmed Bahaa Mazen | TBD | @Ahmed-Mazen |
-| Ahmed ELwakeel | TBD | @ahmedelwakeel8 |
-| Mohamed Tamer | TBD | @Mohamed393652 |
+|:------:|:------:|:--------:|
+| Ibrahim Ahmed | TBD | [@ibr4hemo](https://github.com/Ibr4hemo) |
+| youssef elageal | TBD | [@youssefos4ma](https://github.com/youssefos4ma) |
+| Ahmed Bahaa Mazen | TBD | [@Ahmed-Mazen](https://github.com/Ahmed-Mazen) |
+| Ahmed ELwakeel | TBD | [@ahmedelwakeel8](https://github.com/ahmedelwakeel8) |
+| Mohamed Tamer | TBD | [@Mohamed393652](https://github.com/Mohamed393652) |
 
 ## Project Overview
 
