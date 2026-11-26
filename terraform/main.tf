@@ -36,3 +36,16 @@ resource "aws_internet_gateway" "Traffic-managment-IGW" {
     Name = "Traffic-managment-IGW"
   }
 }
+
+resource "aws_route_table" "Public Routes" {
+  vpc_id = aws_vpc.main.id
+
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.Traffic-managment-IGW.id
+  }
+
+  tags = {
+    Name = "Public Routes"
+  }
+}
