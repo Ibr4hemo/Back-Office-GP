@@ -19,3 +19,12 @@ resource "aws_subnet" "Public-Subnet" {
     Name = "Public-Subnet"
   }
 }
+
+resource "aws_subnet" "Private-Subnet" {
+  vpc_id     = aws_vpc.Traffic-managment-system.id
+  cidr_block = "100.1.2.0/24"
+  map_public_ip_on_launch=true
+  tags = {
+    Name = "Public-Subnet"
+  }
+}
