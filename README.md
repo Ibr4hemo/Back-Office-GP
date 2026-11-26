@@ -1,7 +1,7 @@
 # Intelligent Traffic Management Dashboard 
 > Project for Digital Egypt Pioneers Initiative (DEPI)
 
-Instructor: Mohamed Rahim
+Instructor: Eng. Mohamed Rahim
 Group: GIZ5_SWD1_S1
 
 ## Problem Addressed:
@@ -80,7 +80,7 @@ _Setup instructions will be added once we have something to run._
 
 - [x] Decide on the project idea
 - [x] Define architecture
-- [ ] Set up repo workflow (branches, PR rules)
+- [x] Set up repo workflow (branches, PR rules)
 - [ ] Build CI/CD pipeline
 - [ ] Containerize and deploy
 - [ ] Add monitoring
