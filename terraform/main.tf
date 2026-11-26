@@ -38,7 +38,7 @@ resource "aws_internet_gateway" "Traffic-managment-IGW" {
 }
 
 resource "aws_route_table" "Public Routes" {
-  vpc_id = aws_vpc.main.id
+  vpc_id = aws_vpc.Traffic-managment-system.id
 
   route {
     cidr_block = "0.0.0.0/0"
@@ -49,3 +49,17 @@ resource "aws_route_table" "Public Routes" {
     Name = "Public Routes"
   }
 }
+
+resource "aws_route_table" "Private Routes" {
+  vpc_id = aws_vpc.Traffic-managment-system.id
+
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.Traffic-managment-IGW.id
+  }
+
+  tags = {
+    Name = "Private Routes"
+  }
+}
+
