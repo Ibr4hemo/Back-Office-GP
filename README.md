@@ -65,7 +65,9 @@ _We will fill this in after choosing the idea. Candidates:_
 ├── monitoring
 │   └── dockerfile
 ├── terraform
-│   └── main.tf
+│   ├── main.tf
+│   ├── vm.tf
+│   └── vpc.tf
 └── .github
     └── workflows
         └── CI.yaml
