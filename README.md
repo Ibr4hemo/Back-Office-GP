@@ -77,8 +77,8 @@ _Setup instructions will be added once we have something to run._
 
 ### Roadmap
 
-- [ ] Decide on the project idea
-- [ ] Define architecture
+- [x] Decide on the project idea
+- [x] Define architecture
 - [ ] Set up repo workflow (branches, PR rules)
 - [ ] Build CI/CD pipeline
 - [ ] Containerize and deploy
