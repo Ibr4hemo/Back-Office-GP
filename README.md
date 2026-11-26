@@ -40,12 +40,12 @@ _To be decided. This section will describe the problem we are solving and the so
 
 ### Tech Stack
 
-- Version control: Git, GitHub
-- CI/CD: GitHub Actions
-- Containers: Docker, Kubernetes
-- IaC and configuration: Terraform, Ansible
-- Cloud: AWS
-- Monitoring: Prometheus, Grafana
+- **Version control**: Git, GitHub
+- **CI/CD**: GitHub Actions
+- **Containers**: Docker, Kubernetes
+- **IaC and configuration**: Terraform, Ansible(maybe)
+- **Cloud**: AWS
+- **Monitoring**: Prometheus, Grafana
 
 ### Repository Structure
 
