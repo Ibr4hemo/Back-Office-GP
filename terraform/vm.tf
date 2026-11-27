@@ -1,9 +1,46 @@
-resource "aws_key_pair" "kind_host" {
+resource "aws_security_group" "k8s_sg" {
+  name        = "traffic-k8s-ec2-sg"
+  description = "Allow SSH and HTTP traffic to kind cluster"
+  vpc_id      = aws_vpc.Traffic-managment-system.id
+
+  ingress {
+    description = "Cluster internal traffic"
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    self        = true
+  }
+
+  ingress {
+    description = "SSH access"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["156.214.245.245/32"]
+  }
+
+  ingress {
+    description = "HTTP ingress for CloudFront and browser traffic"
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+resource "aws_key_pair" "k8s_mster" {
   key_name   = "traffic-managment"
   public_key = file("~/.ssh/traffic-managment.pub")
 }
 
-resource "aws_instance" "kind_host" {
+resource "aws_instance" "k8s_master" {
   ami           = "ami-05253e540604dbbae"
   instance_type = "t3.small"
   subnet_id = aws_subnet.Public-Subnet.id
@@ -65,6 +102,6 @@ resource "aws_instance" "kind_host" {
   EOF
 
   tags = {
-    Name = "kind_host"
+    Name = "k8s_master"
   }
 }
