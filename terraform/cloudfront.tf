@@ -20,8 +20,8 @@ resource "aws_cloudfront_distribution" "https_proxy" {
       origin_protocol_policy = "http-only"
       origin_ssl_protocols = ["TLSv1.2"]
     }
-  }
 
+  }
   default_cache_behavior {
     target_origin_id = "k8s-worker-origin"
     viewer_protocol_policy = "redirect-to-https"
