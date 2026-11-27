@@ -35,7 +35,7 @@ resource "aws_security_group" "k8s_sg" {
   }
 }
 
-resource "aws_key_pair" "k8s_mster" {
+resource "aws_key_pair" "k8s_key" {
   key_name   = "traffic-managment"
   public_key = file("~/.ssh/traffic-managment.pub")
 }
@@ -44,7 +44,7 @@ resource "aws_instance" "k8s_master" {
   ami           = "ami-05253e540604dbbae"
   instance_type = "t3.small"
   subnet_id = aws_subnet.Private-Subnet.id
-  key_name = aws_key_pair.k8s_master.key_name
+  key_name = aws_key_pair.k8s_key.key_name
   vpc_security_group_ids = [aws_security_group.k8s_sg.id]
 
   root_block_device {
@@ -82,5 +82,29 @@ resource "aws_instance" "k8s_master" {
 
   tags = {
     Name = "k8s_master"
+  }
+}
+
+resource "aws_instance" "k8s_worker" {
+  ami           = "ami-05253e540604dbbae"
+  instance_type = "t3.small"
+  subnet_id = aws_subnet.Public-Subnet.id
+  key_name = aws_key_pair.k8s_key.key_name
+  vpc_security_group_ids = [aws_security_group.k8s_sg.id]
+
+  root_block_device {
+    volume_size = 15
+    volume_type = "gp3"
+  }
+
+  user_data = <<-EOF
+    #!/bin/bash
+    set -e
+    hostnamectl set-hostname k8s-worker
+    ${local.k8s_base_setup}
+  EOF
+
+  tags = {
+    Name = "k8s_worker"
   }
 }
