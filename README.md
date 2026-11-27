@@ -65,6 +65,7 @@ _To be decided. This section will describe the problem we are solving and the so
 │   └── dockerfile
 ├── terraform
 │   ├── main.tf
+│   ├── cloudfront.tf
 │   ├── vm.tf
 │   └── vpc.tf
 └── .github
