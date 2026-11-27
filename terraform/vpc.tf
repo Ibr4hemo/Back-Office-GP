@@ -1,6 +1,8 @@
 resource "aws_vpc" "Traffic-managment-system" {
   cidr_block       = "100.1.0.0/20"
   instance_tenancy = "default"
+  enable_dns_support   = true
+  enable_dns_hostnames = true
 
   tags = {
     Name = "Traffic-managment-system"
