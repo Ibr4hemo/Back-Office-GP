@@ -6,8 +6,8 @@ resource "aws_key_pair" "kind_host" {
 resource "aws_instance" "kind_host" {
   ami           = "ami-05253e540604dbbae"
   instance_type = "t3.small"
-  subnet_id = aws_subnet.Private-Subnet.id
-  key_name = aws_key_pair.Kubernetes.key_name
+  subnet_id = aws_subnet.Public-Subnet.id
+  key_name = aws_key_pair.kind_host.key_name
 
   root_block_device {
     volume_size = 30
