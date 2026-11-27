@@ -39,6 +39,11 @@ resource "aws_key_pair" "k8s_key" {
   public_key = file("~/.ssh/traffic-managment.pub")
 }
 
+resource "random_password" "k8s_token" {
+  length  = 32
+  special = false
+}
+
 resource "aws_instance" "k8s_master" {
   ami           = "ami-05253e540604dbbae"
   instance_type = "t3.small"
@@ -62,9 +67,9 @@ user_data = <<-EOF
     echo '/swapfile none swap sw 0 0' >> /etc/fstab
 
     # Install K3s Server (Control Plane)
-    curl -sfL https://get.k3s.io | K3S_TOKEN="${random_password.k3s_token.result}" sh -s - server \
+    curl -sfL https://get.k3s.io | K3S_TOKEN="${random_password.k8s_token.result}" sh -s - server \
       --write-kubeconfig-mode 644 \
-      --node-name k3s-master
+      --node-name k8s-master
 
     # Allow ubuntu user to run kubectl without sudo
     mkdir -p /home/ubuntu/.kube
@@ -84,18 +89,31 @@ resource "aws_instance" "k8s_worker" {
   key_name = aws_key_pair.k8s_key.key_name
   vpc_security_group_ids = [aws_security_group.k8s_sg.id]
   associate_public_ip_address = true
-  depends_on = [aws_instance.k3s_master]
+  depends_on = [aws_instance.k8s_master]
 
   root_block_device {
     volume_size = 15
     volume_type = "gp3"
   }
 
-  user_data = <<-EOF
+user_data = <<-EOF
     #!/bin/bash
     set -e
-    hostnamectl set-hostname k8s-worker
-    ${local.k8s_base_setup}
+    hostnamectl set-hostname k3s-worker
+
+    # Add 1GB swap for Python container image pulls
+    fallocate -l 1G /swapfile && chmod 600 /swapfile && mkswap /swapfile && swapon /swapfile
+    echo '/swapfile none swap sw 0 0' >> /etc/fstab
+
+    # Wait until K3s Master API (port 6443) is ready
+    until curl -k -s https://${aws_instance.k8s_master.private_ip}:6443/ping >/dev/null 2>&1; do
+      sleep 5
+    done
+
+    # Install K3s Agent (Worker) and auto-join Master
+    curl -sfL https://get.k3s.io | K3S_URL="https://${aws_instance.k8s_master.private_ip}:6443" \
+      K3S_TOKEN="${random_password.k8s_token.result}" sh -s - agent \
+      --node-name k8s-worker
   EOF
 
   tags = {
