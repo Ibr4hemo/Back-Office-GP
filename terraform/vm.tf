@@ -1,8 +1,13 @@
-resource "aws_instance" "Kubernetes" {
-  ami           = "ami-083dedce92603a2ad"
-  instance_type = "t3.micro"
+resource "aws_key_pair" "kind_host" {
+  key_name   = "traffic-managment"
+  public_key = file("~/.ssh/traffic-managment.pub")
+}
+
+resource "aws_instance" "kind_host" {
+  ami           = "ami-05253e540604dbbae"
+  instance_type = "t3.small"
 
   tags = {
-    Name = "Kubernetes"
+    Name = "kind_host"
   }
 }
