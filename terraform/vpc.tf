@@ -56,7 +56,7 @@ resource "aws_security_group" "nat_sg" {
 
 resource "aws_instance" "nat_instance" {
   ami                    = "ami-05253e540604dbbae"
-  instance_type          = "t3.nano" 
+  instance_type          = "t3.micro" 
   subnet_id              = aws_subnet.Public-Subnet.id
   vpc_security_group_ids = [aws_security_group.nat_sg.id]
   source_dest_check      = false
