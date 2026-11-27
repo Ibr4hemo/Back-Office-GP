@@ -86,6 +86,7 @@ resource "aws_instance" "k8s_master" {
   subnet_id = aws_subnet.Private-Subnet.id
   key_name = aws_key_pair.k8s_key.key_name
   vpc_security_group_ids = [aws_security_group.k8s_sg.id]
+  depends_on = [aws_instance.nat_instance]
 
   root_block_device {
     volume_size = 15
@@ -131,6 +132,7 @@ resource "aws_instance" "k8s_worker" {
   subnet_id = aws_subnet.Public-Subnet.id
   key_name = aws_key_pair.k8s_key.key_name
   vpc_security_group_ids = [aws_security_group.k8s_sg.id]
+  associate_public_ip_address = true
 
   root_block_device {
     volume_size = 15
@@ -155,6 +157,7 @@ resource "aws_instance" "admin" {
   subnet_id = aws_subnet.Public-Subnet.id
   key_name = aws_key_pair.k8s_key.key_name
   vpc_security_group_ids = [aws_security_group.k8s_sg.id]
+  associate_public_ip_address = true
 
   tags = {
     Name = "admin"
