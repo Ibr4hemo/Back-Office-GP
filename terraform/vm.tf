@@ -108,3 +108,15 @@ resource "aws_instance" "k8s_worker" {
     Name = "k8s_worker"
   }
 }
+
+resource "aws_instance" "admin" {
+  ami           = "ami-05253e540604dbbae"
+  instance_type = "t3.small"
+  subnet_id = aws_subnet.Public-Subnet.id
+  key_name = aws_key_pair.k8s_key.key_name
+  vpc_security_group_ids = [aws_security_group.k8s_sg.id]
+
+  tags = {
+    Name = "admin"
+  }
+}
