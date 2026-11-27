@@ -43,62 +43,41 @@ resource "aws_key_pair" "k8s_mster" {
 resource "aws_instance" "k8s_master" {
   ami           = "ami-05253e540604dbbae"
   instance_type = "t3.small"
-  subnet_id = aws_subnet.Public-Subnet.id
-  key_name = aws_key_pair.kind_host.key_name
+  subnet_id = aws_subnet.Private-Subnet.id
+  key_name = aws_key_pair.k8s_master.key_name
+  vpc_security_group_ids = [aws_security_group.k8s_sg.id]
 
   root_block_device {
-    volume_size = 30
+    volume_size = 15
     volume_type = "gp3"
   }
 
   user_data = <<-EOF
     #!/bin/bash
     set -e
+    hostnamectl set-hostname k8s-master
+    ${local.k8s_base_setup}
 
-    # 1. Add 2GB Swap to protect against OOM
-    fallocate -l 2G /swapfile
-    chmod 600 /swapfile
-    mkswap /swapfile
-    swapon /swapfile
-    echo '/swapfile none swap sw 0 0' >> /etc/fstab
+    # Initialize Kubernetes Control Plane
+    kubeadm init --pod-network-cidr=10.244.0.0/16 --ignore-preflight-errors=Mem
 
-    # 2. Install Docker
-    apt-get update -y
-    apt-get install -y docker.io curl git
-    systemctl enable --now docker
-    usermod -aG docker ubuntu
+    # Configure kubectl for ubuntu user
+    mkdir -p /home/ubuntu/.kube
+    cp -i /etc/kubernetes/admin.conf /home/ubuntu/.kube/config
+    chown -R ubuntu:ubuntu /home/ubuntu/.kube
 
-    # 3. Install kubectl & kind (amd64)
-    curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-    install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
-    rm kubectl
+    # Install Flannel CNI Pod Network
+    su - ubuntu -c "kubectl apply -f https://github.com/flannel-io/flannel/releases/latest/download/kube-flannel.yml"
 
-    curl -Lo /usr/local/bin/kind https://kind.sigs.k8s.io/dl/latest/kind-linux-amd64
-    chmod +x /usr/local/bin/kind
+    # Install NGINX Ingress Controller configured to bind directly to Worker Port 80
+    su - ubuntu -c "kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/baremetal/deploy.yaml"
+    sleep 15
+    su - ubuntu -c "kubectl patch deployment ingress-nginx-controller -n ingress-nginx --type='json' -p='[{\"op\": \"add\", \"path\": \"/spec/template/spec/hostNetwork\", \"value\": true}]'"
 
-    # 4. Create kind cluster config with Port 80 mapped
-    cat <<EOT > /home/ubuntu/kind-config.yaml
-    kind: Cluster
-    apiVersion: kind.x-k8s.io/v1alpha4
-    nodes:
-    - role: control-plane
-      kubeadmConfigPatches:
-      - |
-        kind: InitConfiguration
-        nodeRegistration:
-          kubeletExtraArgs:
-            node-labels: "ingress-ready=true"
-      extraPortMappings:
-      - containerPort: 80
-        hostPort: 80
-        protocol: TCP
-    EOT
-
-    chown ubuntu:ubuntu /home/ubuntu/kind-config.yaml
-
-    # 5. Spin up kind cluster and NGINX Ingress Controller as ubuntu user
-    su - ubuntu -c "kind create cluster --config /home/ubuntu/kind-config.yaml --name traffic-cluster"
-    su - ubuntu -c "kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml"
+    # Save the worker join command to a file for easy retrieval
+    kubeadm token create --print-join-command > /home/ubuntu/join-command.sh
+    chmod +x /home/ubuntu/join-command.sh
+    chown ubuntu:ubuntu /home/ubuntu/join-command.sh
   EOF
 
   tags = {
