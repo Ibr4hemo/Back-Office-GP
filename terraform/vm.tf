@@ -15,7 +15,7 @@ resource "aws_security_group" "k8s_sg" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["156.214.245.245/32"]
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   ingress {
@@ -60,7 +60,7 @@ resource "aws_instance" "k8s_master" {
 user_data = <<-EOF
     #!/bin/bash
     set -e
-    hostnamectl set-hostname k3s-master
+    hostnamectl set-hostname k8s-master
 
     # Add 1GB swap as safety buffer
     fallocate -l 1G /swapfile && chmod 600 /swapfile && mkswap /swapfile && swapon /swapfile
@@ -99,7 +99,7 @@ resource "aws_instance" "k8s_worker" {
 user_data = <<-EOF
     #!/bin/bash
     set -e
-    hostnamectl set-hostname k3s-worker
+    hostnamectl set-hostname k8s-worker
 
     # Add 1GB swap for Python container image pulls
     fallocate -l 1G /swapfile && chmod 600 /swapfile && mkswap /swapfile && swapon /swapfile
