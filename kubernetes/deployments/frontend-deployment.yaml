@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+  namespace: devops-project
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      nodeSelector:
+        kubernetes.io/hostname: k8s-worker
+      containers:
+        - name: frontend
+          image: ahmedelwakeel8/traffic-frontend:1.0
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80
