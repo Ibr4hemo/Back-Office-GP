@@ -3,6 +3,22 @@ resource "aws_security_group" "k8s_sg" {
   vpc_id      = aws_vpc.Traffic-managment-system.id
 
   ingress {
+    description = "Frontend NodePort 30080"
+    from_port   = 30080
+    to_port     = 30080
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  
+  ingress {
+    description = "Monitoring NodePort 30080"
+    from_port   = 30300
+    to_port     = 30300
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
     description = "Cluster internal traffic"
     from_port   = 0
     to_port     = 0
@@ -75,6 +91,9 @@ user_data = <<-EOF
     mkdir -p /home/ubuntu/.kube
     cp /etc/rancher/k3s/k3s.yaml /home/ubuntu/.kube/config
     chown -R ubuntu:ubuntu /home/ubuntu/.kube
+
+    kubectl taint nodes k3s-master CriticalAddonsOnly=true:NoSchedule
+    curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
   EOF
 
   tags = {
