@@ -1,4 +1,5 @@
 # Intelligent Traffic Management Dashboard 
+[![CI](https://github.com/Ibr4hemo/Back-Office-GP/actions/workflows/CI.yaml/badge.svg)](https://github.com/Ibr4hemo/Back-Office-GP/actions/workflows/CI.yaml)
 > Project for Digital Egypt Pioneers Initiative (DEPI)
 
 * Instructor: Eng. Mohamed Rahim
@@ -16,7 +17,7 @@ Develop a traffic monitoring system that collects simulated traffic data from Io
 
 - Traffic data collection service (CSV or simulated sensor inputs, Dockerized)
 - Web dashboard showing congestion, peak times, and alerts
-- CI/CD pipeline for service updates (Jenkins)
+- CI/CD pipeline for service updates (GitHub Actions)
 - Docker containers for services
 - Kubernetes deployment for scalability
 - Prometheus dashboards and alerts for system metrics
@@ -72,6 +73,22 @@ _To be decided. This section will describe the problem we are solving and the so
         └── CI.yaml
 ```
 
+### CI/CD
+
+CI runs on GitHub Actions ([`.github/workflows/CI.yaml`](.github/workflows/CI.yaml)) for every pull request to `main` and every push to `main`.
+
+| Job | What it checks |
+|:----|:---------------|
+| Terraform | `terraform fmt -check`, `terraform validate`, `tflint` |
+| Kubernetes manifests | `kubeconform` schema validation of `kubernetes/` |
+| Backend (Python) | Installs `requirements.txt`, lints with `ruff` (syntax errors and undefined names), runs the Alembic migrations against a throwaway Postgres 16, then starts the app and checks that `/api/events` answers |
+| Docker (backend / frontend / database / monitoring) | Builds each image. On `main` it also pushes to GHCR as `ghcr.io/ibr4hemo/back-office-gp/<service>:sha-<commit>` and `:latest`. A service is skipped until its `Dockerfile` has a `FROM` line. |
+| CI passed | Summary check that fails if any job above failed. Branch protection requires it. |
+
+Before pushing Terraform changes, run `terraform fmt -recursive` inside `terraform/` so the format check passes.
+
+CD (deploying new images to the k3s cluster) will be added once the services and Kubernetes manifests exist.
+
 ### Getting Started
 
 _Setup instructions will be added once we have something to run._
@@ -90,4 +107,5 @@ _Setup instructions will be added once we have something to run._
 
 - Create a branch per task: `feature/<short-name>`
 - Open a pull request; at least one teammate reviews before merging
-- Never commit directly to `main`
+- The `CI passed` check must be green before merging
+- Never commit directly to `main` (`main` is protected, so direct pushes are rejected)

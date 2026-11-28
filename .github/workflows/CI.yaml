@@ -1,5 +1,214 @@
 name: CI
 
 on:
+  pull_request:
+    branches: [ "main" ]
   push:
     branches: [ "main" ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# Cancel an older run on the same branch/PR when a new commit is pushed.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  terraform:
+    name: Terraform
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: terraform
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: hashicorp/setup-terraform@v4
+        with:
+          terraform_version: 1.17.2
+
+      # Non-blocking for now: the existing .tf files aren't formatted yet.
+      # Once someone runs `terraform fmt -recursive` in terraform/, delete the
+      # `continue-on-error` line so formatting is enforced.
+      - name: Format check
+        continue-on-error: true
+        run: |
+          if ! terraform fmt -check -recursive -diff; then
+            echo "::warning::Terraform files are not formatted. Run 'terraform fmt -recursive' in terraform/."
+            exit 1
+          fi
+
+      - name: Init (no backend, no AWS credentials needed)
+        run: terraform init -backend=false -input=false
+
+      # vm.tf reads ~/.ssh/traffic-managment.pub, which only exists on our own
+      # machines. Create a throwaway key on the runner so validate can read it.
+      - name: Create a dummy SSH key for validate
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keygen -t ed25519 -N "" -q -f ~/.ssh/traffic-managment
+
+      - name: Validate
+        run: terraform validate -no-color
+
+      - uses: terraform-linters/setup-tflint@v6
+        with:
+          tflint_version: v0.66.0
+
+      - name: Lint
+        run: |
+          tflint --init
+          # Warnings are shown in the log but only errors fail the job.
+          tflint --format compact --minimum-failure-severity=error
+
+  kubernetes:
+    name: Kubernetes manifests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Install kubeconform
+        run: |
+          curl -sSL https://github.com/yannh/kubeconform/releases/download/v0.8.0/kubeconform-linux-amd64.tar.gz \
+            | tar xz -C "$RUNNER_TEMP" kubeconform
+
+      - name: Validate manifests
+        run: |
+          "$RUNNER_TEMP/kubeconform" -strict -summary -ignore-missing-schemas kubernetes/
+
+  backend:
+    name: Backend (Python)
+    runs-on: ubuntu-latest
+    # Throwaway Postgres just for this job, same version as database/Dockerfile.
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: traffic
+          POSTGRES_PASSWORD: traffic
+          POSTGRES_DB: traffic
+        ports: [ "5432:5432" ]
+        options: >-
+          --health-cmd "pg_isready -U traffic"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      DATABASE_URL: postgresql+psycopg://traffic:traffic@localhost:5432/traffic
+      SECRET_KEY: ci-only-secret
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: backend/requirements.txt
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt ruff
+
+      # Only real bugs for now: syntax errors and undefined names.
+      - name: Lint
+        run: ruff check --select E9,F63,F7,F82 --exclude app/static --output-format=github .
+
+      - name: Run database migrations
+        run: alembic upgrade head
+
+      # Start the app and make sure it answers. Replace with pytest once tests exist.
+      - name: Smoke test
+        run: |
+          python manage.py > app.log 2>&1 &
+          for i in $(seq 1 30); do
+            if curl -fsS http://localhost:1122/api/events > /dev/null; then
+              echo "Backend is up and /api/events answered."
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "Backend did not respond within 60s. App log:"
+          cat app.log
+          exit 1
+
+  docker:
+    name: Docker (${{ matrix.service }})
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    strategy:
+      fail-fast: false
+      matrix:
+        service: [ backend, frontend, database, monitoring ]
+    steps:
+      - uses: actions/checkout@v7
+
+      # Accepts "Dockerfile" or "dockerfile" (Linux runners are case-sensitive).
+      # Services whose Dockerfile is missing or empty are skipped instead of failing,
+      # so a service turns on as soon as someone writes a real Dockerfile.
+      - name: Check for a Dockerfile
+        id: check
+        run: |
+          for f in "${{ matrix.service }}/Dockerfile" "${{ matrix.service }}/dockerfile"; do
+            if grep -qiE '^[[:space:]]*FROM[[:space:]]' "$f" 2>/dev/null; then
+              echo "build=true" >> "$GITHUB_OUTPUT"
+              echo "file=$f" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+          done
+          echo "build=false" >> "$GITHUB_OUTPUT"
+          echo "::notice::${{ matrix.service }} has no Dockerfile with a FROM line yet, skipping build."
+
+      - uses: docker/setup-buildx-action@v4
+        if: steps.check.outputs.build == 'true'
+
+      - name: Log in to GitHub Container Registry
+        if: steps.check.outputs.build == 'true' && github.event_name == 'push'
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Image tags
+        id: meta
+        if: steps.check.outputs.build == 'true'
+        uses: docker/metadata-action@v6
+        with:
+          images: ghcr.io/${{ github.repository }}/${{ matrix.service }}
+          tags: |
+            type=sha
+            type=raw,value=latest,enable={{is_default_branch}}
+
+      # PRs only build the image (to prove it builds); pushes to main also publish it.
+      - name: Build and push
+        if: steps.check.outputs.build == 'true'
+        uses: docker/build-push-action@v7
+        with:
+          context: ${{ matrix.service }}
+          file: ${{ steps.check.outputs.file }}
+          push: ${{ github.event_name == 'push' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha,scope=${{ matrix.service }}
+          cache-to: type=gha,mode=max,scope=${{ matrix.service }}
+
+  # Single status check that branch protection requires. Add new jobs to `needs`.
+  ci-passed:
+    name: CI passed
+    if: always()
+    needs: [ terraform, kubernetes, backend, docker ]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check results of all jobs
+        if: contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled')
+        run: |
+          echo "One or more CI jobs failed or were cancelled."
+          exit 1
+
+      - run: echo "All CI jobs passed."
