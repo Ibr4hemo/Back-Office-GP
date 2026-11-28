@@ -25,7 +25,7 @@ resource "aws_subnet" "Private-Subnet" {
   map_public_ip_on_launch=false
   
   tags = {
-    Name = "Public-Subnet"
+    Name = "Private-Subnet"
   }
 }
 
